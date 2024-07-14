@@ -1,7 +1,7 @@
 docker run --name tmp_langfuse \
 --rm \
 -v `
--e DATABASE_URL=postgresql://root:gotit!321@localhost:5432/langfuse \
+-e DATABASE_URL=postgresql://root:mypassword@localhost:5432/langfuse \
 -e NEXTAUTH_URL=http://localhost:3000 \
 -e NEXTAUTH_SECRET=mysecret \
 -e SALT=mysalt \

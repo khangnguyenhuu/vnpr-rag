@@ -1,6 +1,6 @@
 services:
   chatbot-api:
-    image: gotit-chatbot-0.9.0-17102024:latest
+    build: .
     container_name: chatbot_server
     restart: always
     ports:
@@ -16,7 +16,7 @@ services:
       - langfuse-server
     entrypoint: bash -c "./bash/run_server.sh"
     networks:
-      - gotit-chatbot
+      - chatbot
 
   redis_db:
     image: redis/redis-stack:edge-x86_64
@@ -26,9 +26,9 @@ services:
       - "6379:6379" # redis database
       - "8001:8001" # redis insight UI
     volumes:
-      - /container/data_chabot_redis:/data
+      - ./mount_data/data_chabot_redis:/data
     networks:
-      - gotit-chatbot
+      - chatbot
 
   langfuse-server:
     image: langfuse/langfuse:2
@@ -45,7 +45,7 @@ services:
       - TELEMETRY_ENABLED=${TELEMETRY_ENABLED:-true}
       - LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES=${LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES:-false}
     networks:
-      - gotit-chatbot
+      - chatbot
 
   langfuse-db:
     image: postgres
@@ -62,10 +62,10 @@ services:
     ports:
       - 5432:5432
     volumes:
-      -  /container/langfuse_db_postgres:/var/lib/postgresql/data
+      -  ./mount_data/langfuse_db_postgres:/var/lib/postgresql/data
     networks:
-      - gotit-chatbot
+      - chatbot
       
 networks:
-  gotit-chatbot:
-    name: gotit-chatbot
+  chatbot:
+    name: chatbot

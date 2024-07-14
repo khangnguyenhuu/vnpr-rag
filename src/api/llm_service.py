@@ -174,42 +174,41 @@ class AssistantService:
         history = cl.user_session.get("history")
         history.append({"role": "user", "content": message.content})
 
-        # try:
-        start = time.time()
-        res = await cl.make_async(query_engine.query)(message.content)
-        logger.llm_logger.info(f'User: {message.content}')
-        msg = cl.Message(content="", author="Assistant")
-        
-        full_resp = ''
-        for token in res.response_gen:
-            await msg.stream_token(token)
-            full_resp+=token
-        # get response reference document
-        refs_resource = res.source_nodes
-        url_refs = []
-        for ref in refs_resource:
-            ref.metadata.keys()
-            ref = ref.metadata["file_name"].replace(".html", "")
-            if ref not in url_refs:
-                url_refs.append(ref)
-        url_refs = "\n".join(["- "+i for i in url_refs])
-        response_ref = f'\n\nDưới đây là các tài liệu tôi đã sử dụng để đưa ra câu trả lời, có thể một số sẽ không hữu dụng, mong bạn bỏ qua nhé!\n{url_refs}'
-        for token in response_ref:
-            await msg.stream_token(token)
-        await msg.send()
-        end = time.time()
-        langfuse_callback_handler.flush()
+        try:
+            start = time.time()
+            res = await cl.make_async(query_engine.query)(message.content)
+            logger.llm_logger.info(f'User: {message.content}')
+            msg = cl.Message(content="", author="Assistant")
+            
+            full_resp = ''
+            for token in res.response_gen:
+                await msg.stream_token(token)
+                full_resp+=token
+            # get response reference document
+            refs_resource = res.source_nodes
+            url_refs = []
+            for ref in refs_resource:
+                ref.metadata.keys()
+                ref = ref.metadata["file_name"]
+                if ref not in url_refs:
+                    url_refs.append(ref)
+            url_refs = "\n".join(["- "+i for i in url_refs])
+            response_ref = f'\n\nDưới đây là các tài liệu tôi đã sử dụng để đưa ra câu trả lời, có thể một số sẽ không hữu dụng, mong bạn bỏ qua nhé!\n{url_refs}'
+            for token in response_ref:
+                await msg.stream_token(token)
+            await msg.send()
+            end = time.time()
+            langfuse_callback_handler.flush()
 
-        
-        assistant_response = full_resp.replace("\n", "\t") + "\t" + response_ref.replace("\n", "\t")
-        logger.llm_logger.info(f'Assistant: {(assistant_response)}')
-        logger.llm_logger.debug(f'status_code: {http_status["200_code"]["status"]}')
-        logger.llm_logger.info(f'processing time: {end-start}')
-            # As we want to immediately see result in Langfuse, we need to flush the callback handler
-        # except:
-        #     await cl.Message(content=http_status["407_code"]["message"], author="Assistant").send()
-        #     logger.llm_logger.debug(f'status_code: {http_status["407_code"]["status"]}')
-        #     logger.llm_logger.error(traceback.format_exc())
+            
+            assistant_response = full_resp.replace("\n", "\t") + "\t" + response_ref.replace("\n", "\t")
+            logger.llm_logger.info(f'Assistant: {(assistant_response)}')
+            logger.llm_logger.debug(f'status_code: {http_status["200_code"]["status"]}')
+            logger.llm_logger.info(f'processing time: {end-start}')
+        except Exception as e:
+            await cl.Message(content=http_status["407_code"]["message"], author="Assistant").send()
+            logger.llm_logger.debug(f'status_code: {http_status["407_code"]["status"]}')
+            logger.llm_logger.error(traceback.format_exc())
 
         if cfg.LLM_RECOMMEND_MODEL.ENABLE_QUESTION_RECOMMENDER:
             from src.utils.chat_utils import handle_next_question_generation

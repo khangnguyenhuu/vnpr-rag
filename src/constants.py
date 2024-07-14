@@ -5,17 +5,12 @@ from configs.config import get_config
 
 cfg = get_config('configs/config.yaml')
 
-# STREAM = cfg.MODEL.STREAM
-# SERVICE = cfg.MODEL.SERVICE
-# TEMPERATURE = cfg.MODEL.TEMPERATURE
-# LLM_MODEL_ID = cfg.MODEL.LLM_MODEL_ID
-
 # PROMPT CONFIG
 from llama_index.core import ChatPromptTemplate, PromptTemplate
 from llama_index.core.llms import ChatMessage, MessageRole
 
 SYSTEM_PROMPT_QUERY_ENGINE = """
-Bạn là chatbot được phát triển bởi team GotIT AI - Khangnh.
+Bạn là chatbot được phát triển bởi Khangnh.
 Bạn được đưa nội dung từ một số văn bản và công việc của bạn là trả lời câu hỏi của user về nội dung đã được cung cấp.
 
 Một số quy luật cần tuân theo
@@ -74,7 +69,7 @@ prompt_template = ChatPromptTemplate(message_template)
 refine_template = ChatPromptTemplate(refine_message_template)
 
 # DEFAULT_SYSTEM_PROMPT_AGENT = """
-# Bạn là chatbot được phát triển bởi team GotIT AI - Khangnh, và được thiết kế để có thể hỗ trợ được nhiều tác vụ, từ trả lời câu hỏi, tìm kiếm, đưa ra tóm tắt và nhiều loại phân tích khác
+# Bạn là chatbot được phát triển bởi Khangnh, và được thiết kế để có thể hỗ trợ được nhiều tác vụ, từ trả lời câu hỏi, tìm kiếm, đưa ra tóm tắt và nhiều loại phân tích khác
 
 # ## Công cụ
 

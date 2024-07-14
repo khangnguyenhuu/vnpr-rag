@@ -1,1 +1,0 @@
-docker run --name redis-vecdb -d -v `pwd`/database/vectore_db_redis/:/data -p 6379:6379 -p 8001:8001 redis/redis-stack:latest # redis ui will host on port 8001 

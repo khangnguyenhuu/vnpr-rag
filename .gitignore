@@ -12,3 +12,5 @@ lib/*
 database/*
 unit_test
 logs/*
+mount_data
+models/*

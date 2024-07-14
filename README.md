@@ -1,12 +1,16 @@
-# Gotit Chatbot
+# VIETNAMESE-PRODUCTION-READY-RAG (VNPR-RAG)
+- This project aim to create a baseline RAG which you can follow to build-up your RAG in your production-enviroment
+- Some highlight features:
+  - RAG Chatbot with UI powered by chainlit
+  - Chatbot Monitoring powered by langfuse (trace LLM reasoning, cost metrics,...)
+  - Database Admin UI
+  - Ingest data APIa
 
-Redmine: https://redmine.gotit.vn/issues/49325?tab=time_entries
+- Overview the project
 
-Bookstack: https://bookstack.gotit.vn/books/pd-c-scan-it/page/phuong-phap-va-luong-hoat-dong-cua-chatbot-hoi-dap-cac-van-ban-noi-bo-cong-ty
 
-- You can ingest data to the database via endpoint, get updated database to use, manage data in your vector database by using UI from redis-stack, monitor your LLM-system health via Langfuse.
-
-- Its also can integrate to Microsoft teams and can be expand for more platforms.
+# Disclaimer
+- My project doesn't include security (network, system) so you must further develop it suit to your requirements
 
 # Requirements
 - docker version 20.10.25.
@@ -18,12 +22,17 @@ I have tested this pipeline on amazon EC2 instance g4dn.2xlarge with 16GB vRAM T
 # Getting Started
 **1. Clone the repository:**
 ```bash
-git clone https://gitlab.gotit.vn/ai/gotit-chatbot
-cd gotit-chatbot
+git clone https://github.com/khangnguyenhuu/vnpr-rag
+cd vnpr-rag
 ```
 **2. Deployment:**
 ```bash
-docker-compose up (all done)
+docker-compose up (choose docker compose file suit to your system)
+
+# option
+docker-compose up -f docker-compose-mac.yml up (choose which docker-compose file you want to use)
+
+# wait a while till the chatbot server is on (becasuse rerank model will be download (), llama-index dont have option to modify the rerank model cache dir)
 ```
 
 **3. Get langfuse api key:**
@@ -121,7 +130,11 @@ Thanks for wonderful works of:
 - [Llama index](https://github.com/run-llama/llama_index) for RAG building
 - [Langfuse](https://github.com/hwchase17/langchain) for LLM Monitoring
 - [AIO_Research_Agent](https://github.com/AIVIETNAMResearch/AIO_Research_Agent) for base code of this project
+- [Groq-API](https://console.groq.com/keys) Free + Exstream speed (cost effective) solution for LLM (hehe i used to test my bot for 2 weeks with just < 1$ cost when call llama3-8b-8192)
 
 This project also use postgresql for langfuse database and redis for vector storing in RAG system
 
+# TODO-LIST:
+- Intergrate AI Agent
+- User feedback monitoring (for evaluate, create dataset purpose)
 

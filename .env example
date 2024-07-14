@@ -2,10 +2,6 @@
 GROQ_API_KEY=""
 OPENAI_API_KEY=""
 
-# TEAMS INTEGRATE CONFIG
-TEAMS_APP_ID="" # define when intergrate to teams app
-TEAMS_APP_PASSWORD="" # define when intergrate to teams app
-
 # docker compose env
 
 # postgres config

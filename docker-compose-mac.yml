@@ -17,16 +17,9 @@ services:
     entrypoint: bash -c "./bash/run_server.sh"
     networks:
       - chatbot
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
 
   redis_db:
-    image: redis/redis-stack:edge-x86_64
+    image: redis/redis-stack:edge-arm64
     container_name: containered_chabot_redis
     restart: always
     ports:
@@ -55,7 +48,7 @@ services:
       - chatbot
 
   langfuse-db:
-    image: postgres:12.19-bullseye
+    image: postgres
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]

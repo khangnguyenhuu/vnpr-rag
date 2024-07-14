@@ -1,5 +1,4 @@
-# Welcome to GotitChatbot! 🤖
-Chào mọi người, đây là chatbot hỗ trợ tìm kiếm nhanh các quy trình của công ty GotIT ứng dụng công nghệ Generative AI
+# Welcome to VNPR-RAG! 🤖
+Chào mọi người, mình là VNPR-RAG Bot
 
-
-*Author: Khangnh - GotIT*
+*Author: Khangnh*
