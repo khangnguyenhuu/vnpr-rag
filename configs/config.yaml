@@ -1,0 +1,30 @@
+LLM_MODEL:  
+  TEMPERATURE: 0.3
+  STREAM: True
+  MAX_TOKENS: 8192
+  SERVICE: groq # specify service to use, support OpenAI, Gemini, Groq, Ollama is currently supported
+  LLM_MODEL_ID: llama3-8b-8192 # specify model of service to use
+
+EMBEDDING_MODEL:
+  EMBEDDING_MODEL_NAME: BAAI/bge-m3
+  EMBEDDING_SERVICE: hf # [ollama, openai, hf]
+  EMBEDDING_DIMS: 1024 # equal to hidden size of output of embedding model
+  EMBEDD_BATCH_SIZE: 1 
+  MAX_LENGTH: 2048
+
+LLM_RECOMMEND_MODEL:
+  ENABLE_QUESTION_RECOMMENDER: False # setup false to default, DONT TURN ON, feature will coming soon
+  QR_SERVICE:  # [ ollama, openai, groq, gemini ] # LEAVE THIS BLANK, THIS IS THE CONFIG OF ABOVE LINE
+  QR_MODEL_ID: # ALSO THE SAME OF ABOVE
+
+VECTOR_DATABASE:
+  VECTOR_STORE_TYPE: "redis"  # currently support redis (maybe i will update more later)
+  SIMILARITY_TOP_K: 5
+  REDIS_HOST: "redis://redis_db:6379"
+
+RERANK_MODEL:
+  MODEL_NAME: "BAAI/bge-reranker-v2-m3"
+  RERANK_TOP_N: 5
+
+GENERAL_CONFIG:
+  DATABASE_DOCUMENT_STORE_FOLDER: database/tmp_documents

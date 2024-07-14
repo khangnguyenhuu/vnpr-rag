@@ -1,0 +1,19 @@
+# LLM SERVICE KEYS
+GROQ_API_KEY=""
+OPENAI_API_KEY=""
+
+# docker compose env
+
+# postgres config
+POSTGRES_USER="root" 
+POSTGRES_PASSWORD="mypassword"
+POSTGRES_PORT="5432"
+POSTGRES_DB="langfuse"
+
+# langfuse config
+LANGFUSE_HOST="http://langfuse-server:3000"
+LANGFUSE_SALT="mysalt"
+NEXTAUTH_SECRET="mysecret"
+
+LANGFUSE_PUBLIC_KEY=""
+LANGFUSE_SECRET_KEY=""

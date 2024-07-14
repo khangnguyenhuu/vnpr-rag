@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "c2084c90-ec69-440a-b1a7-fb8127f06843",
+		"name": "Chatbot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34882642"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "uploaded_file",
+							"type": "file",
+							"src": "/home/template.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://cb15-52-221-82-203.ngrok-free.app/uploadFile/",
+					"protocol": "https",
+					"host": [
+						"cb15-52-221-82-203",
+						"ngrok-free",
+						"app"
+					],
+					"path": [
+						"uploadFile",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
