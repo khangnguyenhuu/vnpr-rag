@@ -55,7 +55,7 @@ services:
       - chatbot
 
   langfuse-db:
-    image: postgres:12.19-bullseye
+    image: postgres
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
