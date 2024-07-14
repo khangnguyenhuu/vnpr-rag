@@ -1,13 +1,14 @@
 # VIETNAMESE-PRODUCTION-READY-RAG (VNPR-RAG)
+[![GitHub stars](https://img.shields.io/github/stars/khangnguyenhuu/vnpr-rag)](https://github.com/khangnguyenhuu/vnpr-rag/stargazers)[![GitHub issues](https://img.shields.io/github/issues/khangnguyenhuu/vnpr-rag)](https://github.com/khangnguyenhuu/vnpr-rag/issues)
 - This project aim to create a baseline RAG which you can follow to build-up your RAG in your production-enviroment
 - Some highlight features:
   - RAG Chatbot with UI powered by chainlit
   - Chatbot Monitoring powered by langfuse (trace LLM reasoning, cost metrics,...)
   - Database Admin UI
-  - Ingest data APIa
+  - Ingest data via API **(only accept txt)**
 
 - Overview the project
-
+<img title="a title" alt="Alt text" src="public/ZTjZMI8CQWWx3gyE-image.png">
 
 # Disclaimer
 - My project doesn't include security (network, system) so you must further develop it suit to your requirements
@@ -75,16 +76,14 @@ Check .env file
 
 | Endpoint | Type | Desription |
 |----------|----------|----------|
-|GROQ_API_KEY|string| API of Groq, can obtain [from](https://console.groq.com/keys), currently this repo use Groq LLama-8b-8192 model|
-|OPENAI_API_KEY|string| API keys of openapi, can obtain [from](https://platform.openai.com/account/api-keys)|
-|TEAMS_APP_ID|string|ID of microsoft teams app if you want to intergrate to msteams, take a look in to this [tutorial](https://docs.chainlit.io/deploy/teams) to know how to integrate|
-|TEAMS_APP_PASSWORD|string|Password of microsoft teams app if you want to intergrate to msteams, take a look in to this [tutorial](https://docs.chainlit.io/deploy/teams) to know how to integrate|
+|GROQ_API_KEY|string| API of Groq, can obtain [from there](https://console.groq.com/keys), currently this repo use Groq LLama-8b-8192 model (you can specify model in configs/config.yaml)|
+|OPENAI_API_KEY|string| API keys of openapi, can obtain [from there](https://platform.openai.com/account/api-keys)|
 |POSTGRES_USER|string|Postgres user, must define|
 |POSTGRES_PASSWORD|string|Postgres password, must define|
 |POSTGRES_PORT|string|Postgres config, must define|
 |POSTGRES_DB|string|Postgres config, database name|
-|LANGFUSE_HOST|string|Langfuse config, you can obtain from langfuse dashboard|
-|LANGFUSE_SALT|string|Lanfuse config, you for encrypted information in database| 
+|LANGFUSE_HOST|string|Langfuse config|
+|LANGFUSE_SALT|string|Lanfuse config, use for encrypted information in database| 
 |NEXTAUTH_SECRET|string|Lanfuse config, anystring you like| 
 |LANGFUSE_SECRET_KEY|string|Langfuse config, you can obtain from langfuse dashboard|
 |LANGFUSE_PUBLIC_KEY|string|Langfuse config, you can obtain from langfuse dashboard|
@@ -130,11 +129,12 @@ Thanks for wonderful works of:
 - [Llama index](https://github.com/run-llama/llama_index) for RAG building
 - [Langfuse](https://github.com/hwchase17/langchain) for LLM Monitoring
 - [AIO_Research_Agent](https://github.com/AIVIETNAMResearch/AIO_Research_Agent) for base code of this project
-- [Groq-API](https://console.groq.com/keys) Free + Exstream speed (cost effective) solution for LLM (hehe i used to test my bot for 2 weeks with just < 1$ cost when call llama3-8b-8192)
+- [Groq-API](https://console.groq.com/keys) Free + Exstream speed (cost effective) solution for LLM (hehe i used to test my bot for 2 weeks with just < 1$ cost when call api llama3-8b-8192)
 
 This project also use postgresql for langfuse database and redis for vector storing in RAG system
 
 # TODO-LIST:
-- Intergrate AI Agent
+- Update AI Agent (for my experiment, AI Agent is not good for database query job, hmm any contribute hope you open PR or tell me in inssue)
 - User feedback monitoring (for evaluate, create dataset purpose)
+- Support more datatype (pdf,...)
 
