@@ -1,0 +1,1 @@
+docker run -d --gpus all -v ollama_model:/root/.ollama -it --net host --name ollama training_detection /bin/bash

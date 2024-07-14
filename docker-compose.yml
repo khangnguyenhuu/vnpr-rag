@@ -1,0 +1,78 @@
+services:
+  chatbot-api:
+    build: .
+    container_name: chatbot_server
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - .env:/server/.env
+      - ./configs/config.yaml:/server/configs/config.yaml
+      - ./database:/server/database
+      - ./logs:/server/logs
+      - ./models:/server/models
+    depends_on:
+      - redis_db
+      - langfuse-server
+    entrypoint: bash -c "./bash/run_server.sh"
+    networks:
+      - chatbot
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  redis_db:
+    image: redis/redis-stack:edge-x86_64
+    container_name: containered_chabot_redis
+    restart: always
+    ports:
+      - "6379:6379" # redis database
+      - "8001:8001" # redis insight UI
+    volumes:
+      - ./mount_data/data_chabot_redis:/data
+    networks:
+      - chatbot
+
+  langfuse-server:
+    image: langfuse/langfuse:2
+    depends_on:
+      langfuse-db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@langfuse-db:${POSTGRES_PORT}/${POSTGRES_DB}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - SALT=${LANGFUSE_SALT}
+      - NEXTAUTH_URL=${LANGFUSE_HOST}
+      - TELEMETRY_ENABLED=${TELEMETRY_ENABLED:-true}
+      - LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES=${LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES:-false}
+    networks:
+      - chatbot
+
+  langfuse-db:
+    image: postgres
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    volumes:
+      -  ./mount_data/langfuse_db_postgres:/var/lib/postgresql/data
+    networks:
+      - chatbot
+      
+networks:
+  chatbot:
+    name: chatbot
