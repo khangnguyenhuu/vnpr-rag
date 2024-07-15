@@ -1,6 +1,7 @@
 # VIETNAMESE-PRODUCTION-READY-RAG (VNPR-RAG)
 [![GitHub stars](https://img.shields.io/github/stars/khangnguyenhuu/vnpr-rag)](https://github.com/khangnguyenhuu/vnpr-rag/stargazers)[![GitHub issues](https://img.shields.io/github/issues/khangnguyenhuu/vnpr-rag)](https://github.com/khangnguyenhuu/vnpr-rag/issues)
 - This project aim to create a baseline RAG which you can follow to build-up your RAG in your production-enviroment
+- [Video demo](https://www.youtube.com/watch?v=4iqVCnX4rrE) 
 - Some highlight features:
   - RAG Chatbot with UI powered by chainlit
   - Chatbot Monitoring powered by langfuse (trace LLM reasoning, cost metrics,...)
@@ -18,7 +19,7 @@
 - docker-compose version 2.18.1.
 - Cuda 12.1 (or maybe lower but at least 11.8).
 I have tested this pipeline on amazon EC2 instance g4dn.2xlarge with 16GB vRAM Tesla T4 GPU, 8 vCPUs, 32GB memory, maybe you could use an smaller instance with low vRAM (8GB maybe goodfit depend on token length you use).
-- I have also tested it without gpu, you can replace docker-compose with file docker-compose-cpu to use cpu version, it work fine but slower than gpu version.
+- I have also tested it without gpu, you can replace docker-compose with file docker-compose-cpu or docker-compose-mac to use cpu or mac version, it work fine but slower than gpu version.
 
 # Getting Started
 **1. Clone the repository:**
@@ -26,7 +27,19 @@ I have tested this pipeline on amazon EC2 instance g4dn.2xlarge with 16GB vRAM T
 git clone https://github.com/khangnguyenhuu/vnpr-rag
 cd vnpr-rag
 ```
-**2. Deployment:**
+**2. Modify configs**
+You can check tutorial in section **How to use Configs**
+
+In summary you need configs some variables in .env **(rename ".env example" to ".env")** file:
+- GROQ_API_KEY or OPENAI_API_KEY (if you use OPENAI_API_KEY you just leave GROQ_API_KEY blank)
+- LANGFUSE_SALT
+- NEXTAUTH_SECRET
+- LANGFUSE_SECRET_KEY
+- LANGFUSE_PUBLIC_KEY	
+
+You can leave configs/config.yaml by default
+
+**3. Deployment:**
 ```bash
 docker-compose up (choose docker compose file suit to your system)
 
@@ -36,7 +49,7 @@ docker-compose up -f docker-compose-mac.yml up (choose which docker-compose file
 # wait a while till the chatbot server is on (becasuse rerank model will be download (), llama-index dont have option to modify the rerank model cache dir)
 ```
 
-**3. Get langfuse api key:**
+**4. Get langfuse api key:**
  - You must go to localhost:3000 create a new project > project settings > get public/private key from langfuse
  - After that, go to .env file and replace LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY with your key, and restart your docker-compose with these command
  ```bash
@@ -50,8 +63,8 @@ docker-compose up -f docker-compose-mac.yml up (choose which docker-compose file
 Maybe this repo can deploy without docker soon, but not now :(, cause i experiment all in docker, and this project have a lot of dependencies need deploy in same time not only our bot but also our monitoring, vector database, etc.
 
 # After deployment
-
-We can test our bot via some tunnel like [ngrok](https://ngrok.com/)
+- We can test our bot in localhost:8000/chainlit
+- Or publish it via some tunnel like [ngrok](https://ngrok.com/)
 ```markdown
 ngrok http <port>
 Example:
@@ -67,7 +80,7 @@ Example:
 |localhost:8000/chainlit|Chatbot UI for interact with our bot|-|
 |localhost:8000/uploadFile|Endpoint ingest document data to vector database **(only accept txt file)**|Body accept: file-like object with key "uploaded_file", you can checkout postman collection in /postman to have a view about how to use this endpoint|
 
-# How to use Configs:
+# How to use Configs {#htuc}
 We will take a look into 2 configs:
 
 **1. Enviroment configs**
