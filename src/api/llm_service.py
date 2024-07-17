@@ -26,6 +26,7 @@ from src.utils.chat_utils import setup_history, handle_generate_actions
 from src.http_message.message import http_status
 from src.api.ingest_data_service import IngestionService
 from src.callbacks.langfuse_callback import langfuse_callback_handler
+from langfuse.decorators import langfuse_context, observe
 
 Settings.callback_manager = CallbackManager([langfuse_callback_handler])
 load_dotenv(override=True)
@@ -168,6 +169,7 @@ class AssistantService:
         cl.user_session.set("history", history)
         
     
+    # @observe()
     async def aon_message(self, message: cl.Message):
         query_engine = cl.user_session.get("query_engine")
 
@@ -175,11 +177,16 @@ class AssistantService:
         history.append({"role": "user", "content": message.content})
 
         try:
+            msg = cl.Message(content="", author="Assistant")
+            # langfuse_context.update_current_trace(
+            #     session_id=msg.id
+            # )
+            langfuse_callback_handler.set_trace_params(
+                session_id=msg.id
+            )
             start = time.time()
             res = await cl.make_async(query_engine.query)(message.content)
             logger.llm_logger.info(f'User: {message.content}')
-            msg = cl.Message(content="", author="Assistant")
-            
             full_resp = ''
             for token in res.response_gen:
                 await msg.stream_token(token)
@@ -197,8 +204,9 @@ class AssistantService:
             for token in response_ref:
                 await msg.stream_token(token)
             await msg.send()
+
             end = time.time()
-            langfuse_callback_handler.flush()
+            # langfuse_callback_handler.flush()
 
             
             assistant_response = full_resp.replace("\n", "\t") + "\t" + response_ref.replace("\n", "\t")
