@@ -10,6 +10,8 @@ POSTGRES_PASSWORD="mypassword"
 POSTGRES_PORT="5432"
 POSTGRES_DB="langfuse"
 
+# redis config
+REDIS_HOST="redis://172.17.0.4:6379"
 # langfuse config
 LANGFUSE_HOST="http://langfuse-server:3000"
 LANGFUSE_SALT="mysalt"

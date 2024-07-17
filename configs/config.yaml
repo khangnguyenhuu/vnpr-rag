@@ -20,7 +20,6 @@ LLM_RECOMMEND_MODEL:
 VECTOR_DATABASE:
   VECTOR_STORE_TYPE: "redis"  # currently support redis (maybe i will update more later)
   SIMILARITY_TOP_K: 5
-  REDIS_HOST: "redis://172.17.0.4:6379"
 
 RERANK_MODEL:
   MODEL_NAME: "BAAI/bge-reranker-v2-m3"

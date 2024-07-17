@@ -23,9 +23,11 @@ from llama_index.core import (
 )
 from src.constants import cfg, prompt_template, refine_template, rerank_postprocessor, logger, TEXT_EMBEDDING_MODEL
 from src.utils.chat_utils import setup_history, handle_generate_actions
-from src.http_message.message import http_status
+from src.http_message.message import HTTP_STATUS
 from src.api.ingest_data_service import IngestionService
+from src.llms import MODEL_TABLE
 from src.callbacks.langfuse_callback import langfuse_callback_handler
+
 from langfuse.decorators import langfuse_context, observe
 
 Settings.callback_manager = CallbackManager([langfuse_callback_handler])
@@ -48,7 +50,7 @@ class AssistantService:
 
         self.llm = self.load_model(cfg.LLM_MODEL.SERVICE, cfg.LLM_MODEL.LLM_MODEL_ID)
         Settings.llm = self.llm
-        # Settings.embed_model = TEXT_EMBEDDING_MODEL
+        Settings.embed_model = TEXT_EMBEDDING_MODEL
         self.query_engine = self.create_query_engine(self.query_index, self.rerank_processor, self.prompt_tmpl, self.refine_tmpl)
 
     def load_tool(self):
@@ -123,21 +125,11 @@ class AssistantService:
         logging.info("This action can take a few minutes!")
         service = service.lower()
         assert service in ["ollama", "groq", "openai"], "The implementation for other types of LLMs are not ready yet!"
-        if service == "groq":
-            from llama_index.llms.groq import Groq
-            logging.info(f"Loading Groq Model: {model_id}")    
-            return Groq(model=model_id, temperature=cfg.LLM_MODEL.TEMPERATURE, sequence_length=cfg.LLM_MODEL.MAX_TOKENS, top_p=0.5, api_key=os.getenv("GROQ_API_KEY"))
-        elif service == "ollama":
-            from llama_index.llms.ollama import Ollama
-            logging.info(f"Loading Ollama Model: {model_id}")
-            return Ollama(model=model_id, temperature=cfg.LLM_MODEL.TEMPERATURE, base_url='http://localhost:11434')
-        elif service == "openai":
-            from llama_index.llms.openai import OpenAI
-            logging.info(f"Loading OpenAI Model: {model_id}")
-            return OpenAI(model=model_id, temperature=cfg.LLM_MODEL.TEMPERATURE, api_key=os.getenv("OPENAI_API_KEY"))
-        else:
+        try:
+            return MODEL_TABLE[service](model_id)
+        except Exception as e:
             raise NotImplementedError("The implementation for other types of LLMs are not ready yet!")
-    
+
     def predict(self, prompt):
         """
         Predicts the next sequence of text given a prompt using the loaded language model.
@@ -160,7 +152,7 @@ class AssistantService:
         cl.user_session.set("query_engine", self.query_engine)
         cl.user_session.set("assistant_service", self)
         await cl.Message(
-            author="Assistant", content="Chào bạn, vui lòng đợi 1 xí nha!",
+            author="Assistant", content="Chào bạn, vui lòng đợi 1 xí nha!", disable_feedback=True
         ).send()
     
     async def aon_resume(self, thread: ThreadDict):
@@ -169,8 +161,8 @@ class AssistantService:
         cl.user_session.set("history", history)
         
     
-    # @observe()
     async def aon_message(self, message: cl.Message):
+        logger.llm_logger.info(f'----Start request----')
         query_engine = cl.user_session.get("query_engine")
 
         history = cl.user_session.get("history")
@@ -178,9 +170,7 @@ class AssistantService:
 
         try:
             msg = cl.Message(content="", author="Assistant")
-            # langfuse_context.update_current_trace(
-            #     session_id=msg.id
-            # )
+
             langfuse_callback_handler.set_trace_params(
                 session_id=msg.id
             )
@@ -191,6 +181,7 @@ class AssistantService:
             for token in res.response_gen:
                 await msg.stream_token(token)
                 full_resp+=token
+                
             # get response reference document
             refs_resource = res.source_nodes
             url_refs = []
@@ -206,17 +197,16 @@ class AssistantService:
             await msg.send()
 
             end = time.time()
-            # langfuse_callback_handler.flush()
-
             
             assistant_response = full_resp.replace("\n", "\t") + "\t" + response_ref.replace("\n", "\t")
             logger.llm_logger.info(f'Assistant: {(assistant_response)}')
-            logger.llm_logger.debug(f'status_code: {http_status["200_code"]["status"]}')
+            logger.llm_logger.debug(f'status_code: {HTTP_STATUS[200].status_code}')
             logger.llm_logger.info(f'processing time: {end-start}')
         except Exception as e:
-            await cl.Message(content=http_status["407_code"]["message"], author="Assistant").send()
-            logger.llm_logger.debug(f'status_code: {http_status["407_code"]["status"]}')
+            await cl.Message(content=HTTP_STATUS[407].body.decode("utf-8"), author="Assistant").send()
+            logger.llm_logger.debug(f'status_code: {HTTP_STATUS[407].status_code}')
             logger.llm_logger.error(traceback.format_exc())
+        logger.llm_logger.info(f'----End request----')
 
         if cfg.LLM_RECOMMEND_MODEL.ENABLE_QUESTION_RECOMMENDER:
             from src.utils.chat_utils import handle_next_question_generation
