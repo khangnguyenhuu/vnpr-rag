@@ -52,7 +52,7 @@ class IngestionService:
         '''
         Init llama index ingestion pipeline
         '''
-        _, host, port = self.cfg.VECTOR_DATABASE.REDIS_HOST.split(":")
+        _, host, port = os.getenv("REDIS_HOST").split(":")
         host = host.replace("//", "")
         from llama_index.vector_stores.redis import RedisVectorStore
         from redisvl.schema import IndexSchema
