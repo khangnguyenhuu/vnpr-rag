@@ -95,6 +95,7 @@ Check .env file
 |POSTGRES_PASSWORD|string|Postgres password, must define|
 |POSTGRES_PORT|string|Postgres config, must define|
 |POSTGRES_DB|string|Postgres config, database name|
+|REDIS_HOST|string|Redis host|
 |LANGFUSE_HOST|string|Langfuse config|
 |LANGFUSE_SALT|string|Lanfuse config, use for encrypted information in database| 
 |NEXTAUTH_SECRET|string|Lanfuse config, anystring you like| 
@@ -127,7 +128,6 @@ LLM_RECOMMEND_MODEL:
 VECTOR_DATABASE:
   VECTOR_STORE_TYPE: "redis"  # currently support redis (maybe i will update more later)
   SIMILARITY_TOP_K: 5 # top document return when do semantic search in vector DB
-  REDIS_HOST: "redis://redis_db:6379" # redis endpoint, keep default if you use docker-compose
 
 RERANK_MODEL:
   MODEL_NAME: "BAAI/bge-reranker-v2-m3" # model to rerank

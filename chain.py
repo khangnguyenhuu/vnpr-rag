@@ -1,12 +1,15 @@
 #author khangnh
 import chainlit as cl
+import chainlit.data as cl_data
 from chainlit.server import app
 from chainlit.types import ThreadDict
 from llama_index.core.callbacks import CallbackManager
 
 from src.api.llm_service import AssistantService
 from src.callbacks.langfuse_callback import langfuse_callback_handler
+from src.feedback_module.feedback import UserFeedback
 
+cl_data._data_layer=UserFeedback()
 
 @cl.cache
 def create_assistant_serivce():
