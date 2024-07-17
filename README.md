@@ -149,6 +149,5 @@ This project also use postgresql for langfuse database and redis for vector stor
 
 # TODO-LIST:
 - Update AI Agent (for my experiment, AI Agent is not good for database query job, hmm any contribute hope you open PR or tell me in inssue)
-- User feedback monitoring (for evaluate, create dataset purpose)
 - Support more datatype (pdf,...)
 
