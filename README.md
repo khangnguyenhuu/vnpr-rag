@@ -7,6 +7,7 @@
   - Chatbot Monitoring powered by langfuse (trace LLM reasoning, cost metrics,...)
   - Database Admin UI
   - Ingest data via API **(only accept txt)**
+  - User feedback monitoring in Langfuse (User can use thumb up or thump down on chabot message to send feedback of response, it will store in langfuse server)
 
 - Overview the project
 <img title="a title" alt="Alt text" src="public/ZTjZMI8CQWWx3gyE-image.png">
